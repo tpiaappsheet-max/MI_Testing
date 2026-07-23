@@ -311,8 +311,8 @@
                 <div class="sub-section">
                     <h3>Guaranteed Test Limits</h3>
                     <div class="auto-grid">
-                        <div class="form-group"><label>Max HV Res. (Ohms)</label><input type="number" id="lim_hv_res"></div>
-                        <div class="form-group"><label>Max LV Res. (mOhms)</label><input type="number" id="lim_lv_res"></div>
+                        <div class="form-group"><label>Max HV Res. at 75°C (Ohms)</label><input type="number" id="lim_hv_res"></div>
+                        <div class="form-group"><label>Max LV Res.  at 75°C (mOhms)</label><input type="number" id="lim_lv_res"></div>
                         <div class="form-group"><label>Max No-Load Loss (W)</label><input type="number" id="lim_nll"></div>
                         <div class="form-group"><label>Max Load Loss (W)</label><input type="number" id="lim_ll"></div>
                     </div>
@@ -336,7 +336,7 @@
 
                 <div id="tap_container" style="display:none;">
                     <h3>HV Resistance Data 
-                        <select id="out_u_hv" class="res-unit no-print">
+                        <select id="out_u_hv" class="res-unit">
                             <option value="1">Result in Ohms</option>
                             <option value="1000">Result in mOhms</option>
                         </select>
@@ -353,7 +353,7 @@
                             <option value="PP">Phase-to-Phase (P-P)</option>
                             <option value="PN">Phase-to-Neutral (P-N)</option>
                         </select>
-                        <select id="out_u_lv" class="res-unit no-print">
+                        <select id="out_u_lv" class="res-unit">
                             <option value="1000">Result in mOhms</option>
                             <option value="1">Result in Ohms</option>
                         </select>
@@ -403,7 +403,7 @@
                     <div class="result-row" style="background: #d4edda; border-color: #28a745;">
                         <div>
                             <span><strong>Net Corrected No-Load Loss (x MF):</strong></span>
-                            <select id="out_u_nll" class="res-unit no-print"><option value="1">Watts</option><option value="0.001">kW</option></select>
+                            <select id="out_u_nll" class="res-unit"><option value="1">Watts</option><option value="0.001">kW</option></select>
                         </div>
                         <div><span id="out_nl_net" class="result-val" style="font-size: 1.1rem;">-</span><span id="stat_nll"></span></div>
                     </div>
@@ -455,7 +455,7 @@
                     <div class="result-row" style="background: #d4edda; border-color: #28a745; margin-top: 10px;">
                         <div>
                             <span><strong>Total Load Losses At 75°C:</strong></span>
-                            <select id="out_u_ll" class="res-unit no-print"><option value="1">Watts</option><option value="0.001">kW</option></select>
+                            <select id="out_u_ll" class="res-unit"><option value="1">Watts</option><option value="0.001">kW</option></select>
                         </div>
                         <div><span id="out_ll_75" class="result-val" style="font-size: 1.1rem;">-</span><span id="stat_ll"></span></div>
                     </div>
@@ -577,12 +577,12 @@
             let lt_kv = pt_getVal('lt_v') * pt_getVal('u_lt_v') / 1000;
 
             let vRatio = (ht_kv && lt_kv) ? (ht_kv / lt_kv) * Math.sqrt(3) : 0;
-            let htCurrent = (ht_kv && cap_mva) ? Math.ceil((cap_mva * 1000) / (ht_kv * 1.732)) : 0;
-            let ltCurrent = (lt_kv && cap_mva) ? Math.ceil((cap_mva * 1000) / (lt_kv * 1.732)) : 0;
+            let htCurrent = (ht_kv && cap_mva) ? ((cap_mva * 1000) / (ht_kv * 1.732)) : 0;
+            let ltCurrent = (lt_kv && cap_mva) ? ((cap_mva * 1000) / (lt_kv * 1.732)) : 0;
 
-            pt_setTxt('out_v_ratio', vRatio);
-            pt_setTxt('out_ht_i', htCurrent);
-            pt_setTxt('out_lt_i', ltCurrent);
+            pt_setTxt('out_v_ratio', vRatio,0);
+            pt_setTxt('out_ht_i', htCurrent,3);
+            pt_setTxt('out_lt_i', ltCurrent,3);
 
             let tempRes = pt_getVal('temp_res');
             let uHvIn = pt_getVal('u_hv_res');
