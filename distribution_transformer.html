@@ -247,7 +247,6 @@
                 <li><a href="index.html" onclick="toggleSidebar()">🏠 Dashboard</a></li>
                 <li><a href="power_transformer.html" onclick="toggleSidebar()">⚡ Power Transformer</a></li>
                 <li><a href="distribution_transformer.html" class="active" onclick="toggleSidebar()">🔋 Distribution Transformer</a></li>
-                <li><a href="#" onclick="logoutUser()">🚪 Logout</a></li>
             </ul>
         </nav>
 
@@ -482,9 +481,6 @@
     </div>
 
     <script>
-        const currentUser = JSON.parse(localStorage.getItem('eng_portal_user'));
-        if (!currentUser) { window.location.href = 'login.html'; }
-
         // Prevent accidental tab close or refresh
         window.addEventListener('beforeunload', function (e) {
             e.preventDefault();
@@ -494,11 +490,6 @@
         function toggleSidebar() {
             document.getElementById('portalSidebar').classList.toggle('open');
             document.getElementById('sidebarOverlay').classList.toggle('open');
-        }
-
-        function logoutUser() {
-            localStorage.removeItem('eng_portal_user');
-            window.location.href = 'login.html';
         }
 
         function debounce(func, delay) {
