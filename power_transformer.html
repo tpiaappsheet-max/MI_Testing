@@ -238,6 +238,7 @@
         }
 
         input[type="number"],
+        input[type="text"],
         select {
             padding: 8px;
             border: 1px solid var(--border);
@@ -511,8 +512,8 @@
                 <div class="auto-grid">
                     <div class="form-group">
                         <label>PTR Unique ID</label>
-                        <div class="input-group" style="height: 35px; border: none;">
-                            <input type="text"  style="padding: 5px; font-size: 20px;">
+                        <div class="input-group">
+                            <input type="text" id="ptr_unique_id" placeholder="e.g. 12345" style="padding: 8px; font-size: 16px;">
                         </div>
                     </div>
                     <div class="form-group">
@@ -734,7 +735,6 @@
             }
         });
 
-        // 1. Load User Reports into Left Sidebar as Viewable/Actionable Items
         function loadSidebarReports() {
             const reportsListEl = document.getElementById('userReportsList');
             try {
@@ -791,15 +791,18 @@
             }
         }
 
-        // 2. Native Clean A4 PDF / Print Trigger & Google Sheets Backend Sync
         const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz4qhGq7cFt6P3TSZ62X1jiN6wktvvh9wipAh5Nij1TIRy6YG4PPtJyzx9fXn-uOkel/exec";
 
         async function pt_downloadPDF() {
             if (confirm("Generate A4 PDF Report?")) {
                 await pt_calculateAll();
 
-                const timestampCode = new Date().toISOString().slice(0, 10).replace(/-/g, '') + "_" + Math.floor(1000 + Math.random() * 9000);
-                const uniqueFileName = `PTR-${currentUser.Username}-${timestampCode}.pdf`;
+                // Fetch PTR Unique ID value dynamically
+                const uniqueIdInput = document.getElementById('ptr_unique_id').value.trim();
+                const safeId = uniqueIdInput ? uniqueIdInput : ("PTR-" + Math.floor(1000 + Math.random() * 9000));
+                
+                // Formulate filename as requested: PTR-[Unique ID entered].pdf
+                const uniqueFileName = safeId.startsWith("PTR-") ? `${safeId}.pdf` : `PTR-${safeId}.pdf`;
 
                 const reportRecord = {
                     userId: currentUser.userID,
@@ -825,6 +828,8 @@
                     console.log("Cloud sync queued.");
                 }
 
+                // Dynamically apply document title so browser print-to-PDF uses the filename as default
+                document.title = uniqueFileName.replace('.pdf', '');
                 window.print();
             }
         }
