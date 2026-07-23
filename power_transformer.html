@@ -260,7 +260,7 @@
 
         <main class="main-content" id="mainWrapper">
             <div class="controls no-print">
-                <button class="btn-download" onclick="pt_downloadPDF()">⬇️ Save & Download A4 PDF</button>
+                <button class="btn-download" onclick="pt_downloadPDF()">⬇️ Download PDF</button>
                 <button class="btn-large" onclick="pt_calculateAll()">⚡ Calculate Results</button>
             </div>
 
@@ -580,7 +580,7 @@
             let htCurrent = (ht_kv && cap_mva) ? ((cap_mva * 1000) / (ht_kv * 1.732)) : 0;
             let ltCurrent = (lt_kv && cap_mva) ? ((cap_mva * 1000) / (lt_kv * 1.732)) : 0;
 
-            pt_setTxt('out_v_ratio', vRatio,0);
+            pt_setTxt('out_v_ratio', vRatio,3);
             pt_setTxt('out_ht_i', htCurrent,3);
             pt_setTxt('out_lt_i', ltCurrent,3);
 
