@@ -106,12 +106,6 @@
                 </li>
                 
                 <!-- Embedded Reports Section inside Sidebar -->
-                <div class="reports-section">
-                    <h3>📁 Reports Created By You</h3>
-                    <ul id="userReportsList" class="reports-list">
-                        <li><span>Loading from sheet...</span></li>
-                    </ul>
-                </div>
 
                 <li><a href="#" onclick="logoutUser()">🚪 Logout</a></li>
             </ul>
@@ -160,44 +154,53 @@
             window.location.href = 'login.html';
         }
 
-        // REPLACE WITH YOUR GOOGLE APPS SCRIPT WEB APP URL
         const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz4qhGq7cFt6P3TSZ62X1jiN6wktvvh9wipAh5Nij1TIRy6YG4PPtJyzx9fXn-uOkel/exec";
 
-        async function loadUserReportsFromSheet(userId) {
-            const reportsListEl = document.getElementById('userReportsList');
-            try {
-                // Try fetching live from Google Sheet backend
-                const response = await fetch(APPS_SCRIPT_URL, {
-                    method: "POST",
-                    body: JSON.stringify({ action: "getReports", userId: userId })
-                });
-                const result = await response.json();
+async function loadSidebarReports() {
+    const reportsListEl = document.getElementById('userReportsList');
+    reportsListEl.innerHTML = '<li><span>Loading from Drive...</span></li>';
+    
+    try {
+        // Fetch reports directly from Google Sheet / Drive tracking database
+        const response = await fetch(APPS_SCRIPT_URL, {
+            method: "POST",
+            body: JSON.stringify({ action: "getReports", userId: currentUser.userID })
+        });
+        const result = await response.json();
 
-                if (result.status === "success" && result.reports && result.reports.length > 0) {
-                    reportsListEl.innerHTML = '';
-                    result.reports.forEach(rep => {
-                        const li = document.createElement('li');
-                        li.innerHTML = `<span class="filename">${rep.filename}</span> <span class="filetime">${rep.timestamp}</span>`;
-                        reportsListEl.appendChild(li);
-                    });
-                } else {
-                    // Fallback to local backup storage if online sheet has no entries yet
-                    const localReports = JSON.parse(localStorage.getItem('eng_portal_reports') || '[]').filter(r => r.userId === userId);
-                    if(localReports.length === 0) {
-                        reportsListEl.innerHTML = '<li style="color: #bdc3c7; text-align: center; padding: 6px;">No reports generated yet.</li>';
-                    } else {
-                        reportsListEl.innerHTML = '';
-                        localReports.forEach(rep => {
-                            const li = document.createElement('li');
-                            li.innerHTML = `<span class="filename">${rep.filename}</span> <span class="filetime">${rep.timestamp}</span>`;
-                            reportsListEl.appendChild(li);
-                        });
-                    }
-                }
-            } catch (err) {
-                reportsListEl.innerHTML = '<li style="color: #e74c3c;">Offline mode (Cached view)</li>';
-            }
+        if (result.status === "success" && result.reports && result.reports.length > 0) {
+            reportsListEl.innerHTML = '';
+            result.reports.forEach((rep, index) => {
+                const li = document.createElement('li');
+                li.style.cursor = "pointer";
+                li.title = "Saved in Drive Folder (1e9XhCW-ehz6hJbTKZbZJlq6iVcjKVU0r)";
+                li.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span class="filename" style="color: #3498db; text-decoration: underline;" onclick="reprintReport('${rep.filename}')">${rep.filename}</span>
+                    </div>
+                    <span class="filetime">${rep.timestamp}</span>`;
+                reportsListEl.appendChild(li);
+            });
+        } else {
+            reportsListEl.innerHTML = '<li style="color: #bdc3c7; text-align: center; padding: 6px;">No reports in Drive.</li>';
         }
+    } catch (err) {
+        // Fallback to local storage if offline
+        const allReports = JSON.parse(localStorage.getItem('eng_portal_reports') || '[]');
+        const userReports = allReports.filter(r => r.userId === currentUser.userID);
+        
+        if (userReports.length === 0) {
+            reportsListEl.innerHTML = '<li style="color: #bdc3c7; text-align: center; padding: 6px;">No reports yet.</li>';
+            return;
+        }
+        reportsListEl.innerHTML = '';
+        userReports.forEach((rep) => {
+            const li = document.createElement('li');
+            li.innerHTML = `<span class="filename" style="color: #fff;">${rep.filename}</span> <span class="filetime">${rep.timestamp} (Offline cache)</span>`;
+            reportsListEl.appendChild(li);
+        });
+    }
+}
     </script>
 </body>
 </html>
