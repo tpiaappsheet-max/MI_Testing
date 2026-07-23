@@ -28,35 +28,6 @@
         .sidebar-menu li a p { font-size: 0.75rem; color: #bdc3c7; font-weight: normal; margin: 0; }
         .sidebar-menu li a:hover, .sidebar-menu li a.active { background-color: var(--secondary); border-left-color: var(--accent); }
 
-        /* Embedded Reports Section in Sidebar */
-        .reports-section {
-            margin: 15px 12px;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 12px;
-            border-radius: 6px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .reports-section h3 {
-            font-size: 0.81rem;
-            color: #bdc3c7;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding-bottom: 4px;
-        }
-        .reports-list { list-style: none; max-height: 180px; overflow-y: auto; }
-        .reports-list li {
-            padding: 8px 6px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            font-size: 0.8rem;
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-        .reports-list li span.filename { font-weight: 600; color: #fff; word-break: break-all; }
-        .reports-list li span.filetime { color: #95a5a6; font-size: 0.75rem; }
-
         /* Mobile Header & Overlay */
         .mobile-header {
             display: none; background-color: var(--primary); color: white; padding: 12px 15px;
@@ -71,8 +42,6 @@
         .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; margin-top: 20px; }
         .module-card { background: var(--card-bg); border-radius: 8px; padding: 25px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-top: 4px solid var(--accent); text-decoration: none; color: inherit; display: flex; flex-direction: column; align-items: center; text-align: center; transition: transform 0.2s; }
         .module-card:hover { transform: translateY(-4px); }
-        
-        .logout-btn { background: #c0392b; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; }
 
         @media (max-width: 900px) {
             .sidebar { transform: translateX(-100%); }
@@ -88,7 +57,7 @@
     <header class="mobile-header">
         <button class="menu-toggle-btn" onclick="toggleSidebar()">☰ Menu</button>
         <span style="font-weight: bold; font-size: 1.1rem;">Material Testing Portal</span>
-        <span>👤</span>
+        <span>⚡</span>
     </header>
 
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
@@ -104,17 +73,12 @@
                 <li><a href="distribution_transformer.html" onclick="toggleSidebar()">🔋 Distribution Transformer
                     <p>Calculate losses & total loss limit check.</p></a>
                 </li>
-                
-                <!-- Embedded Reports Section inside Sidebar -->
-
-                <li><a href="#" onclick="logoutUser()">🚪 Logout</a></li>
             </ul>
         </nav>
 
         <main class="main-content">
             <div class="top-bar">
-                <h2>Welcome, <span id="userNameDisplay">User</span>!</h2>
-                <button class="logout-btn" onclick="logoutUser()">Logout</button>
+                <h2>Engineering Test Portal Dashboard</h2>
             </div>
 
             <h1>Testing Modules Dashboard</h1>
@@ -124,7 +88,7 @@
                 <a href="power_transformer.html" class="module-card">
                     <div style="font-size: 2.5rem; margin-bottom: 10px;">⚡</div>
                     <h3>Power Transformer</h3>
-                    <p>Calculate resistance, losses, impedance, and sync reports.</p>
+                    <p>Calculate resistance, losses, impedance, and export A4 reports.</p>
                 </a>
                 <a href="distribution_transformer.html" class="module-card" style="border-top-color: #27ae60;">
                     <div style="font-size: 2.5rem; margin-bottom: 10px;">🔋</div>
@@ -136,71 +100,10 @@
     </div>
 
     <script>
-        const currentUser = JSON.parse(localStorage.getItem('eng_portal_user'));
-        if (!currentUser) {
-            window.location.href = 'login.html';
-        } else {
-            document.getElementById('userNameDisplay').innerText = currentUser.Name;
-            loadUserReportsFromSheet(currentUser.userID);
-        }
-
         function toggleSidebar() {
             document.getElementById('portalSidebar').classList.toggle('open');
             document.getElementById('sidebarOverlay').classList.toggle('open');
         }
-
-        function logoutUser() {
-            localStorage.removeItem('eng_portal_user');
-            window.location.href = 'login.html';
-        }
-
-        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz4qhGq7cFt6P3TSZ62X1jiN6wktvvh9wipAh5Nij1TIRy6YG4PPtJyzx9fXn-uOkel/exec";
-
-async function loadSidebarReports() {
-    const reportsListEl = document.getElementById('userReportsList');
-    reportsListEl.innerHTML = '<li><span>Loading from Drive...</span></li>';
-    
-    try {
-        // Fetch reports directly from Google Sheet / Drive tracking database
-        const response = await fetch(APPS_SCRIPT_URL, {
-            method: "POST",
-            body: JSON.stringify({ action: "getReports", userId: currentUser.userID })
-        });
-        const result = await response.json();
-
-        if (result.status === "success" && result.reports && result.reports.length > 0) {
-            reportsListEl.innerHTML = '';
-            result.reports.forEach((rep, index) => {
-                const li = document.createElement('li');
-                li.style.cursor = "pointer";
-                li.title = "Saved in Drive Folder (1e9XhCW-ehz6hJbTKZbZJlq6iVcjKVU0r)";
-                li.innerHTML = `
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span class="filename" style="color: #3498db; text-decoration: underline;" onclick="reprintReport('${rep.filename}')">${rep.filename}</span>
-                    </div>
-                    <span class="filetime">${rep.timestamp}</span>`;
-                reportsListEl.appendChild(li);
-            });
-        } else {
-            reportsListEl.innerHTML = '<li style="color: #bdc3c7; text-align: center; padding: 6px;">No reports in Drive.</li>';
-        }
-    } catch (err) {
-        // Fallback to local storage if offline
-        const allReports = JSON.parse(localStorage.getItem('eng_portal_reports') || '[]');
-        const userReports = allReports.filter(r => r.userId === currentUser.userID);
-        
-        if (userReports.length === 0) {
-            reportsListEl.innerHTML = '<li style="color: #bdc3c7; text-align: center; padding: 6px;">No reports yet.</li>';
-            return;
-        }
-        reportsListEl.innerHTML = '';
-        userReports.forEach((rep) => {
-            const li = document.createElement('li');
-            li.innerHTML = `<span class="filename" style="color: #fff;">${rep.filename}</span> <span class="filetime">${rep.timestamp} (Offline cache)</span>`;
-            reportsListEl.appendChild(li);
-        });
-    }
-}
     </script>
 </body>
 </html>
