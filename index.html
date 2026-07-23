@@ -101,6 +101,9 @@
                 <li><a href="power_transformer.html" onclick="toggleSidebar()">⚡ Power Transformer
                     <p>Calculate resistance, losses & impedance.</p></a>
                 </li>
+                <li><a href="distribution_transformer.html" onclick="toggleSidebar()">🔋 Distribution Transformer
+                    <p>Calculate losses & total loss limit check.</p></a>
+                </li>
                 
                 <!-- Embedded Reports Section inside Sidebar -->
                 <div class="reports-section">
@@ -121,9 +124,20 @@
             </div>
 
             <h1>Testing Modules Dashboard</h1>
-            <p style="color: #666; margin-top: 5px;">Select an engineering module from the left sidebar to calculate and generate reports.</p>
+            <p style="color: #666; margin-top: 5px;">Select an engineering module from the left sidebar or cards below to calculate and generate reports.</p>
 
-        
+            <div class="dashboard-grid">
+                <a href="power_transformer.html" class="module-card">
+                    <div style="font-size: 2.5rem; margin-bottom: 10px;">⚡</div>
+                    <h3>Power Transformer</h3>
+                    <p>Calculate resistance, losses, impedance, and sync reports.</p>
+                </a>
+                <a href="distribution_transformer.html" class="module-card" style="border-top-color: #27ae60;">
+                    <div style="font-size: 2.5rem; margin-bottom: 10px;">🔋</div>
+                    <h3>Distribution Transformer</h3>
+                    <p>Calculate winding resistance, individual losses, total losses summary limit checks.</p>
+                </a>
+            </div>
         </main>
     </div>
 
