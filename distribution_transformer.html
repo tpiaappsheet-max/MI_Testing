@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Distribution Transformer Test - EngPortal</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #34495e;
+            --accent: #2980b9;
+            --bg: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-dark: #2c3e50;
+            --text-light: #ecf0f1;
+            --border: #bdc3c7;
+            --pass: #27ae60;
+            --fail: #c0392b;
+            --sidebar-width: 280px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: var(--bg); color: var(--text-dark); min-height: 100vh; display: flex; flex-direction: column; }
+
+        .portal-wrapper { display: flex; flex: 1; position: relative; min-height: 100vh; }
+
+        /* Sidebar Layout */
+        .sidebar {
+            width: var(--sidebar-width); background-color: var(--primary); color: #ecf0f1;
+            display: flex; flex-direction: column; position: fixed; top: 0; bottom: 0; left: 0;
+            z-index: 1000; transition: transform 0.3s ease-in-out; box-shadow: 2px 0 10px rgba(0, 0, 0, 0.15);
+            overflow-y: auto;
+        }
+        .sidebar-header { padding: 20px; background-color: #1a252f; text-align: center; font-size: 1.2rem; font-weight: bold; border-bottom: 2px solid var(--accent); }
+        .sidebar-menu { list-style: none; padding: 10px 0; }
+        .sidebar-menu li { width: 100%; }
+        .sidebar-menu li a { display: flex; align-items: center; gap: 12px; padding: 14px 20px; color: #ecf0f1; text-decoration: none; font-weight: 500; border-left: 4px solid transparent; }
+        .sidebar-menu li a:hover, .sidebar-menu li a.active { background-color: var(--secondary); border-left-color: var(--accent); }
+
+        /* Reports Section in Sidebar */
+        .reports-section {
+            margin: 15px 12px; background: rgba(0, 0, 0, 0.2); padding: 12px;
+            border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .reports-section h3 { font-size: 0.85rem; color: #bdc3c7; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 4px; }
+        .reports-list { list-style: none; max-height: 180px; overflow-y: auto; }
+        .reports-list li { padding: 8px 6px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-size: 0.8rem; display: flex; flex-direction: column; gap: 2px; }
+        .reports-list li span.filename { font-weight: 600; color: #fff; word-break: break-all; }
+        .reports-list li span.filetime { color: #95a5a6; font-size: 0.75rem; }
+
+        .mobile-header { display: none; background-color: var(--primary); color: white; padding: 12px 15px; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 900; }
+        .menu-toggle-btn { background: var(--accent); color: white; border: none; padding: 8px 14px; border-radius: 4px; font-size: 1rem; cursor: pointer; }
+        .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); z-index: 999; }
+
+        .main-content { flex: 1; margin-left: var(--sidebar-width); padding: 25px; width: calc(100% - var(--sidebar-width)); transition: margin-left 0.3s; }
+        .module-container { max-width: 1000px; margin: 0 auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); }
+        .module-container h1 { text-align: center; color: var(--primary); border-bottom: 2px solid var(--primary); padding-bottom: 10px; margin-bottom: 20px; font-size: 1.5rem; }
+        .module-container h2 { font-size: 1.15rem; color: var(--secondary); border-bottom: 1px solid var(--accent); padding-bottom: 5px; margin-top: 20px; margin-bottom: 12px; }
+        .module-container h3 { font-size: 1rem; color: #555; margin-bottom: 10px; text-decoration: underline; }
+
+        .auto-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 15px; }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group label { font-weight: 600; font-size: 0.85rem; margin-bottom: 4px; color: var(--primary); }
+        .input-group { display: flex; gap: 5px; }
+        input[type="number"], input[type="text"], select { padding: 8px; border: 1px solid var(--border); border-radius: 4px; font-size: 16px; width: 100%; box-sizing: border-box; }
+        .input-group select { width: 45%; background: #eef; }
+        .res-unit { width: auto; display: inline-block; padding: 4px 8px; font-size: 0.8rem; background-color: #f1f2f6; border-radius: 4px; margin-left: 8px;}
+
+        .table-responsive { width: 100%; overflow-x: auto; margin-top: 10px; margin-bottom: 10px; border: 1px solid var(--border); border-radius: 4px; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; min-width: 550px; }
+        th, td { border: 1px solid var(--border); padding: 8px; text-align: center; }
+        th { background-color: var(--secondary); color: white; }
+
+        .result-row { display: flex; justify-content: space-between; align-items: center; background: #e8f4f8; padding: 10px 12px; border-left: 4px solid var(--accent); margin-bottom: 6px; font-size: 0.9rem; border-radius: 2px; flex-wrap: wrap; gap: 6px; }
+        .result-val { font-weight: bold; font-size: 0.95rem; }
+
+        .controls { display: flex; justify-content: center; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+        button { background-color: var(--accent); color: white; border: none; padding: 10px 18px; border-radius: 4px; cursor: pointer; font-size: 0.95rem; font-weight: bold; transition: background 0.2s; }
+        button:hover { background-color: #1f6391; }
+        .btn-large { background-color: #27ae60; }
+        .btn-large:hover { background-color: #219653; }
+        .btn-download { background-color: #8e44ad; }
+        .btn-download:hover { background-color: #732d91; }
+
+        .sub-section { border: 1px dashed var(--border); padding: 12px; margin-bottom: 12px; background: #fafafa; border-radius: 4px; }
+        .badge { padding: 3px 8px; border-radius: 3px; font-size: 0.8rem; font-weight: bold; margin-left: 8px; }
+        .pass { background: var(--pass); color: white; }
+        .fail { background: var(--fail); color: white; }
+
+        @media (max-width: 900px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .sidebar-overlay.open { display: block; }
+            .mobile-header { display: flex; }
+            .main-content { margin-left: 0; width: 100%; padding: 15px; }
+        }
+
+        @media print {
+            body { background: white !important; }
+            .no-print { display: none !important; }
+            .main-content { margin-left: 0 !important; width: 100% !important; padding: 0 !important; }
+            .module-container { box-shadow: none !important; padding: 0 !important; width: 100% !important; max-width: none !important; }
+            input, select { border: none !important; border-bottom: 1px solid #000 !important; background: transparent !important; border-radius: 0 !important; padding: 2px !important; }
+            table, th, td { border: 1px solid #000 !important; }
+            th { background: #eee !important; color: #000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .result-row { border: 1px solid #000 !important; border-left: 4px solid #000 !important; background: white !important; }
+            .sub-section { border: 1px solid #000 !important; background: white !important; page-break-inside: avoid !important; }
+            .badge { border: 1px solid #000 !important; color: #000 !important; background: transparent !important; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="mobile-header no-print">
+        <button class="menu-toggle-btn" onclick="toggleSidebar()">☰ Menu</button>
+        <span style="font-weight: bold; font-size: 1.1rem;">Material Testing Portal</span>
+        <span>👤</span>
+    </header>
+
+    <div class="sidebar-overlay no-print" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <div class="portal-wrapper">
+        <nav class="sidebar no-print" id="portalSidebar">
+            <div class="sidebar-header">⚙️ EngPortal</div>
+            <ul class="sidebar-menu">
+                <li><a href="index.html" onclick="toggleSidebar()">🏠 Dashboard</a></li>
+                <li><a href="power_transformer.html" onclick="toggleSidebar()">⚡ Power Transformer</a></li>
+                <li><a href="distribution_transformer.html" class="active" onclick="toggleSidebar()">🔋 Distribution Transformer</a></li>
+
+                <div class="reports-section">
+                    <h3>
+                        📁 Reports Created
+                        <button onclick="clearUserReports()" title="Clear Report Clutter" style="float: right; background: none; border: none; color: #e74c3c; cursor: pointer; font-size: 0.8rem; font-weight: bold;">🗑️ Clear</button>
+                    </h3>
+                    <ul id="userReportsList" class="reports-list">
+                        <li><span>Loading...</span></li>
+                    </ul>
+                </div>
+
+                <li><a href="#" onclick="logoutUser()">🚪 Logout</a></li>
+            </ul>
+        </nav>
+
+        <main class="main-content" id="mainWrapper">
+            <div class="controls no-print">
+                <button class="btn-download" onclick="dt_downloadPDF()">⬇️ Save & Download A4 PDF</button>
+                <button class="btn-large" onclick="dt_calculateAll()">⚡ Calculate Results</button>
+            </div>
+
+            <div class="module-container" id="dt-report-content">
+                <h1>Distribution Transformer Calculation Report</h1>
+
+                <!-- SECTION 1: GENERAL -->
+                <h2>1. General Transformer Information & Limits</h2>
+                <div class="auto-grid">
+                    <div class="form-group">
+                        <label>DTR Unique ID</label>
+                        <div class="input-group">
+                            <input type="text" id="dtr_unique_id" placeholder="e.g. DTR-001" style="padding: 8px; font-size: 16px;">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Capacity of DTR</label>
+                        <div class="input-group">
+                            <input type="number" id="dtr_cap">
+                            <select id="u_dtr_cap">
+                                <option value="1000">kVA</option>
+                                <option value="1000000">MVA</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>HT Voltage (Line)</label>
+                        <div class="input-group">
+                            <input type="number" id="ht_v">
+                            <select id="u_ht_v">
+                                <option value="1000">kV</option>
+                                <option value="1">V</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>LT Voltage (Line)</label>
+                        <div class="input-group">
+                            <input type="number" id="lt_v">
+                            <select id="u_lt_v">
+                                <option value="1000">kV</option>
+                                <option value="1">V</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sub-section">
+                    <h3>Guaranteed Test Limits</h3>
+                    <div class="auto-grid">
+                        <div class="form-group"><label>Max HV Res. (Ohms)</label><input type="number" id="lim_hv_res"></div>
+                        <div class="form-group"><label>Max LV Res. (mOhms)</label><input type="number" id="lim_lv_res"></div>
+                        <div class="form-group" style="grid-column: span 2;"><label>Max Total Losses (No-Load + Load) (W)</label><input type="number" id="lim_total_losses"></div>
+                    </div>
+                </div>
+
+                <div class="auto-grid">
+                    <div class="result-row"><span>Voltage Ratio:</span> <span id="out_v_ratio" class="result-val">-</span></div>
+                    <div class="result-row"><span>HT Current (A):</span> <span id="out_ht_i" class="result-val">-</span></div>
+                    <div class="result-row"><span>LT Current (A):</span> <span id="out_lt_i" class="result-val">-</span></div>
+                </div>
+
+                <!-- SECTION 2: RESISTANCE -->
+                <h2>2. Winding Resistance per Phase</h2>
+                <div class="auto-grid">
+                    <div class="form-group"><label>Ambient Temp (°C)</label><input type="number" id="temp_res"></div>
+                    <div class="form-group no-print"><label>Number of Taps</label><input type="number" id="num_taps" value="1" min="1" max="21"></div>
+                    <div class="form-group"><label>HV Input Unit</label><select id="u_hv_res"><option value="1">Ohms (Ω)</option><option value="0.001">mOhms (mΩ)</option></select></div>
+                    <div class="form-group"><label>LV Input Unit</label><select id="u_lv_res"><option value="0.001">mOhms (mΩ)</option><option value="1">Ohms (Ω)</option></select></div>
+                </div>
+                <button class="no-print" style="margin-bottom: 12px;" onclick="dt_generateTapTable()">Generate Tap Structure</button>
+
+                <div id="tap_container" style="display:none;">
+                    <h3>HV Resistance Data 
+                        <select id="out_u_hv" class="res-unit no-print">
+                            <option value="1">Result in Ohms</option>
+                            <option value="1000">Result in mOhms</option>
+                        </select>
+                    </h3>
+                    <div class="table-responsive">
+                        <table id="hv_table">
+                            <thead><tr><th>Tap</th><th>Normal?</th><th>1U-1V</th><th>1V-1W</th><th>1W-1U</th><th>Average</th><th>At 75°C</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    
+                    <h3>LV Resistance Data 
+                        <select id="lv_meas_type" class="res-unit no-print" onchange="dt_updateLVHeaders()">
+                            <option value="PP">Phase-to-Phase (P-P)</option>
+                            <option value="PN">Phase-to-Neutral (P-N)</option>
+                        </select>
+                        <select id="out_u_lv" class="res-unit no-print">
+                            <option value="1000">Result in mOhms</option>
+                            <option value="1">Result in Ohms</option>
+                        </select>
+                    </h3>
+                    <div class="table-responsive">
+                        <table id="lv_table">
+                            <thead><tr><th id="th_lv_1">2U-2V</th><th id="th_lv_2">2V-2W</th><th id="th_lv_3">2W-2U</th><th>Average</th><th>At 75°C</th></tr></thead>
+                            <tbody>
+                                <tr>
+                                    <td><input type="number" id="lv_p1"></td>
+                                    <td><input type="number" id="lv_p2"></td>
+                                    <td><input type="number" id="lv_p3"></td>
+                                    <td id="lv_avg" class="result-val">-</td>
+                                    <td id="lv_corr" class="result-val">-</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="result-row no-print" style="margin-top:10px;"><span><strong>Resistance Limit Check:</strong></span><span id="stat_res"></span></div>
+                </div>
+
+                <!-- SECTION 3: NO LOAD LOSSES -->
+                <h2>3. No Load Losses</h2>
+                <div class="sub-section">
+                    <h3>Measuring Instrument Parameters</h3>
+                    <div class="auto-grid">
+                        <div class="form-group"><label>CT Ratio</label><input type="number" id="nl_ct"></div>
+                        <div class="form-group"><label>PT Ratio</label><input type="number" id="nl_pt"></div>
+                        <div class="form-group"><label>Watt Meter Ratio</label><input type="number" id="nl_wm"></div>
+                    </div>
+                </div>
+                <div class="sub-section">
+                    <h3>Observed Parameters</h3>
+                    <div class="auto-grid">
+                        <div class="form-group"><label>Applied Voltage (Volts P-N)</label><input type="number" id="nl_v_meas"></div>
+                        <div class="form-group"><label>Measured Current (Amps)</label><input type="number" id="nl_i_meas"></div>
+                        <div class="form-group"><label>Measured Loss (Watt)</label><input type="number" id="nl_p_meas"></div>
+                    </div>
+                </div>
+                
+                <div class="sub-section">
+                    <h3>Calculated Parameters</h3>
+                    <div class="result-row"><span>Multiplication Factor (CT*PT*WM):</span> <span id="out_nl_mf" class="result-val">-</span></div>
+                    <div class="result-row"><span>Test Voltage (Avg) Volts (P-N):</span> <span id="out_nl_vtest" class="result-val">-</span></div>
+                    <div class="result-row"><span>Calculated No-Load Current (Amps):</span> <span id="out_nl_i" class="result-val">-</span></div>
+                    <div class="result-row"><span>Corrected No-Load Loss (Voltage Correction) (W):</span> <span id="out_nl_pcorr" class="result-val">-</span></div>
+                    <div class="result-row" style="background: #d4edda; border-color: #28a745;">
+                        <div>
+                            <span><strong>Net Corrected No-Load Loss (x MF):</strong></span>
+                            <select id="out_u_nll" class="res-unit no-print"><option value="1">Watts</option><option value="0.001">kW</option></select>
+                        </div>
+                        <div><span id="out_nl_net" class="result-val" style="font-size: 1.1rem;">-</span></div>
+                    </div>
+                </div>
+
+                <!-- SECTION 4: LOAD LOSSES -->
+                <h2>4. Load Losses (At Normal Tap)</h2>
+                <div class="sub-section">
+                    <h3>Measuring Instrument Parameters</h3>
+                    <div class="auto-grid">
+                        <div class="form-group"><label>CT Ratio</label><input type="number" id="ll_ct"></div>
+                        <div class="form-group"><label>PT Ratio</label><input type="number" id="ll_pt"></div>
+                        <div class="form-group"><label>Watt Meter Ratio</label><input type="number" id="ll_wm"></div>
+                    </div>
+                </div>
+                <div class="sub-section">
+                    <h3>Observed Parameters</h3>
+                    <div class="auto-grid">
+                        <div class="form-group"><label>Ambient Temp (°C)</label><input type="number" id="temp_ll"></div>
+                        <div class="form-group"><label>Voltage (Volts P-N)</label><input type="number" id="ll_v_meas"></div>
+                        <div class="form-group"><label>Current (Amps)</label><input type="number" id="ll_i_meas"></div>
+                        <div class="form-group"><label>Load Loss (Watt)</label><input type="number" id="ll_p_meas"></div>
+                    </div>
+                </div>
+                
+                <div class="sub-section">
+                    <h3 style="margin-bottom: 5px;">Calculated Parameters</h3>
+                    <div class="result-row"><span>Multiplication Factor (CT*PT*WM):</span> <span id="out_ll_mf" class="result-val">-</span></div>
+                    <div class="result-row"><span>Test Current (Avg) in Amperes (Phase Current):</span> <span id="out_ll_itest" class="result-val">-</span></div>
+                    <div class="result-row"><span>Corrected Load Losses (Avg) in Watt:</span> <span id="out_ll_pcorr" class="result-val">-</span></div>
+                    <div class="result-row"><span>Calculated Net Load Losses in Watt (Corrected) - Current Correction:</span> <span id="out_ll_net" class="result-val">-</span></div>
+                    
+                    <h3 style="margin-top: 15px; margin-bottom: 5px;">I²R Loss Calculation</h3>
+                    <div class="result-row"><span>Measured Avg HV Resistance in Ω:</span> <span id="out_hv_res" class="result-val">-</span></div>
+                    <div class="result-row"><span>Measured Avg LV Resistance in Ω:</span> <span id="out_lv_res" class="result-val">-</span></div>
+                    <div class="result-row"><span>HV Per Phase Resistance (Avg Resistance x 1.5):</span> <span id="out_hv_phase_res" class="result-val">-</span></div>
+                    <div class="result-row"><span id="lbl_lv_phase_res">LV Per Phase Resistance (Avg Resistance / 2):</span> <span id="out_lv_phase_res" class="result-val">-</span></div>
+                    <div class="result-row"><span>Total HV I²R Loss:</span> <span id="out_hv_i2r" class="result-val">-</span></div>
+                    <div class="result-row"><span>Total LV I²R Loss:</span> <span id="out_lv_i2r" class="result-val">-</span></div>
+                    <div class="result-row"><span>Total I²R Loss (HV + LV):</span> <span id="out_tot_i2r" class="result-val">-</span></div>
+                    <div class="result-row"><span>Corrected Total I²R Loss (HV + LV) at Ambient Temp:</span> <span id="out_tot_i2r_corr" class="result-val">-</span></div>
+
+                    <h3 style="margin-top: 15px; margin-bottom: 5px;">Stray Losses</h3>
+                    <div class="result-row"><span>Stray Losses at Ambient Temp:</span> <span id="out_stray_amb" class="result-val">-</span></div>
+                    <div class="result-row"><span>Stray Losses at 75°C:</span> <span id="out_stray_75" class="result-val">-</span></div>
+
+                    <div class="result-row" style="margin-top: 15px;"><span>Total I²R Loss (HV + LV) at 75°C:</span> <span id="out_tot_i2r_75" class="result-val">-</span></div>
+                    
+                    <div class="result-row" style="background: #d4edda; border-color: #28a745; margin-top: 10px;">
+                        <div>
+                            <span><strong>Total Load Losses At 75°C:</strong></span>
+                            <select id="out_u_ll" class="res-unit no-print"><option value="1">Watts</option><option value="0.001">kW</option></select>
+                        </div>
+                        <div><span id="out_ll_75" class="result-val" style="font-size: 1.1rem;">-</span></div>
+                    </div>
+                    <div class="result-row" style="background: #d4edda; border-color: #28a745; margin-top: 10px;">
+                        <span><strong>Percent Impedance at 75°C (%):</strong></span> <span id="out_z_75" class="result-val">-</span>
+                    </div>
+                </div>
+
+                <!-- SECTION 5: TOTAL LOSSES SUMMARY TAB -->
+                <h2>5. Total Losses Summary & Limit Verification</h2>
+                <div class="sub-section" style="background: #eef9ff; border: 2px solid #2980b9;">
+                    <div class="result-row">
+                        <span>Net Corrected No-Load Loss (W):</span> 
+                        <span id="summary_nll" class="result-val">-</span>
+                    </div>
+                    <div class="result-row">
+                        <span>Total Load Losses at 75°C (W):</span> 
+                        <span id="summary_ll" class="result-val">-</span>
+                    </div>
+                    <div class="result-row" style="background: #d4edda; border-color: #27ae60; font-size: 1.05rem;">
+                        <span><strong>Calculated Total Losses (No-Load + Load) (W):</strong></span> 
+                        <span id="summary_total_losses" class="result-val" style="font-size: 1.2rem;">-</span>
+                    </div>
+                    <div class="result-row" style="background: #fff; margin-top: 8px;">
+                        <span><strong>Total Losses Limit Verification Check:</strong></span> 
+                        <span id="stat_total_losses"></span>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const currentUser = JSON.parse(localStorage.getItem('eng_portal_user'));
+        if (!currentUser) { window.location.href = 'login.html'; }
+
+        function toggleSidebar() {
+            document.getElementById('portalSidebar').classList.toggle('open');
+            document.getElementById('sidebarOverlay').classList.toggle('open');
+        }
+
+        function logoutUser() {
+            localStorage.removeItem('eng_portal_user');
+            window.location.href = 'login.html';
+        }
+
+        function debounce(func, delay) {
+            let timeoutId;
+            return function (...args) {
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(() => { func.apply(this, args); }, delay);
+            };
+        }
+
+        document.addEventListener('input', function (e) {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') {
+                debouncedCalculateAll();
+            }
+        });
+
+        function loadSidebarReports() {
+            const reportsListEl = document.getElementById('userReportsList');
+            try {
+                const allReports = JSON.parse(localStorage.getItem('eng_portal_reports') || '[]');
+                const userReports = allReports.filter(r => r.userId === currentUser.userID);
+
+                if (userReports.length === 0) {
+                    reportsListEl.innerHTML = '<li style="color: #bdc3c7; text-align: center; padding: 6px;">No reports yet.</li>';
+                    return;
+                }
+
+                reportsListEl.innerHTML = '';
+                userReports.forEach((rep, index) => {
+                    const li = document.createElement('li');
+                    li.style.cursor = "pointer";
+                    li.title = "Click to re-download/view report";
+                    li.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span class="filename" style="color: #3498db; text-decoration: underline;" onclick="reprintReport('${rep.filename}')">${rep.filename}</span>
+                            <button onclick="deleteSingleReport(${index}); event.stopPropagation();" style="background:none; border:none; color:#e74c3c; font-size:0.7rem; cursor:pointer;" title="Remove">✕</button>
+                        </div>
+                        <span class="filetime">${rep.timestamp}</span>`;
+                    reportsListEl.appendChild(li);
+                });
+            } catch (err) {
+                reportsListEl.innerHTML = '<li style="color: #e74c3c;">Failed to load.</li>';
+            }
+        }
+
+        function reprintReport(filename) {
+            if(confirm(`Open/Print saved report: ${filename}?`)) {
+                window.print();
+            }
+        }
+
+        function clearUserReports() {
+            if(confirm("Clear all report history from the sidebar?")) {
+                let allReports = JSON.parse(localStorage.getItem('eng_portal_reports') || '[]');
+                allReports = allReports.filter(r => r.userId !== currentUser.userID);
+                localStorage.setItem('eng_portal_reports', JSON.stringify(allReports));
+                loadSidebarReports();
+            }
+        }
+
+        function deleteSingleReport(indexToRemove) {
+            let allReports = JSON.parse(localStorage.getItem('eng_portal_reports') || '[]');
+            let userReports = allReports.filter(r => r.userId === currentUser.userID);
+            let targetReport = userReports[indexToRemove];
+            
+            if(targetReport) {
+                allReports = allReports.filter(r => !(r.userId === targetReport.userId && r.filename === targetReport.filename));
+                localStorage.setItem('eng_portal_reports', JSON.stringify(allReports));
+                loadSidebarReports();
+            }
+        }
+
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz4qhGq7cFt6P3TSZ62X1jiN6wktvvh9wipAh5Nij1TIRy6YG4PPtJyzx9fXn-uOkel/exec";
+
+        async function dt_downloadPDF() {
+            if (confirm("Generate A4 PDF Report?")) {
+                await dt_calculateAll();
+
+                const uniqueIdInput = document.getElementById('dtr_unique_id').value.trim();
+                const safeId = uniqueIdInput ? uniqueIdInput : ("DTR-" + Math.floor(1000 + Math.random() * 9000));
+                const uniqueFileName = safeId.startsWith("DTR-") ? `${safeId}.pdf` : `DTR-${safeId}.pdf`;
+
+                const reportRecord = {
+                    userId: currentUser.userID,
+                    username: currentUser.Username,
+                    filename: uniqueFileName,
+                    folderID: "1e9XhCW-ehz6hJbTKZbZJlq6iVcjKVU0r",
+                    timestamp: new Date().toLocaleString()
+                };
+
+                const allReports = JSON.parse(localStorage.getItem('eng_portal_reports') || '[]');
+                allReports.push(reportRecord);
+                localStorage.setItem('eng_portal_reports', JSON.stringify(allReports));
+                loadSidebarReports(); 
+
+                try {
+                    await fetch(APPS_SCRIPT_URL, {
+                        method: "POST",
+                        mode: "no-cors",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ action: "saveReport", ...reportRecord })
+                    });
+                } catch (e) {
+                    console.log("Cloud sync queued.");
+                }
+
+                document.title = uniqueFileName.replace('.pdf', '');
+                window.print();
+            }
+        }
+
+        function dt_getVal(id) {
+            let val = parseFloat(document.getElementById(id).value);
+            return isNaN(val) ? 0 : val;
+        }
+
+        function dt_setTxt(id, val, dp = 3) {
+            document.getElementById(id).innerText = (isNaN(val) || val === 0) ? '-' : val.toFixed(dp);
+        }
+
+        function dt_setBadge(id, isPass) {
+            let el = document.getElementById(id);
+            if (isPass === null) { el.innerHTML = ''; return; }
+            el.innerHTML = isPass ? '<span class="badge pass">PASS</span>' : '<span class="badge fail">FAIL</span>';
+        }
+
+        function dt_updateLVHeaders() {
+            let type = document.getElementById('lv_meas_type').value;
+            if (type === 'PN') {
+                document.getElementById('th_lv_1').innerText = '2U-2N';
+                document.getElementById('th_lv_2').innerText = '2V-2N';
+                document.getElementById('th_lv_3').innerText = '2W-2N';
+                document.getElementById('lbl_lv_phase_res').innerText = 'LV Per Phase Resistance (Avg Resistance directly):';
+            } else {
+                document.getElementById('th_lv_1').innerText = '2U-2V';
+                document.getElementById('th_lv_2').innerText = '2V-2W';
+                document.getElementById('th_lv_3').innerText = '2W-2U';
+                document.getElementById('lbl_lv_phase_res').innerText = 'LV Per Phase Resistance (Avg Resistance / 2):';
+            }
+        }
+
+        function dt_generateTapTable() {
+            const num = parseInt(document.getElementById('num_taps').value);
+            const tbody = document.querySelector('#hv_table tbody');
+            tbody.innerHTML = '';
+            let midTap = Math.ceil(num / 2);
+
+            for (let i = 1; i <= num; i++) {
+                let isChecked = (i === midTap) ? 'checked' : '';
+                let tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${i}</td>
+                    <td>
+                        <input type="radio" name="normal_tap" value="${i}" ${isChecked} class="no-print">
+                        <span class="print-only" style="display:none;">${i === midTap ? 'Yes' : ''}</span>
+                    </td>
+                    <td><input type="number" id="t${i}_1"></td>
+                    <td><input type="number" id="t${i}_2"></td>
+                    <td><input type="number" id="t${i}_3"></td>
+                    <td id="t${i}_avg" class="result-val">-</td>
+                    <td id="t${i}_corr" class="result-val">-</td>
+                `;
+                tbody.appendChild(tr);
+            }
+            document.getElementById('tap_container').style.display = 'block';
+
+            if (!document.getElementById('printStyleRadio')) {
+                const style = document.createElement('style');
+                style.id = 'printStyleRadio';
+                style.innerHTML = `@media print { input[type="radio"] { display: none; } .print-only { display: inline !important; } }`;
+                document.head.appendChild(style);
+            }
+        }
+
+        async function dt_calculateAll() {
+            if (document.querySelector('#hv_table tbody').innerHTML === '') dt_generateTapTable();
+
+            let cap_mva = dt_getVal('dtr_cap') * dt_getVal('u_dtr_cap') / 1000000;
+            let ht_kv = dt_getVal('ht_v') * dt_getVal('u_ht_v') / 1000;
+            let lt_kv = dt_getVal('lt_v') * dt_getVal('u_lt_v') / 1000;
+
+            let vRatio = (ht_kv && lt_kv) ? (ht_kv / lt_kv) * Math.sqrt(3) : 0;
+            let htCurrent = (ht_kv && cap_mva) ? Math.ceil((cap_mva * 1000) / (ht_kv * 1.732)) : 0;
+            let ltCurrent = (lt_kv && cap_mva) ? Math.ceil((cap_mva * 1000) / (lt_kv * 1.732)) : 0;
+
+            dt_setTxt('out_v_ratio', vRatio);
+            dt_setTxt('out_ht_i', htCurrent);
+            dt_setTxt('out_lt_i', ltCurrent);
+
+            let tempRes = dt_getVal('temp_res');
+            let uHvIn = dt_getVal('u_hv_res');
+            let uLvIn = dt_getVal('u_lv_res');
+            let uHvOut = dt_getVal('out_u_hv');
+            let uLvOut = dt_getVal('out_u_lv');
+
+            let factor75_res = tempRes ? (235 + 75) / (235 + tempRes) : 1;
+            let normalTapRadio = document.querySelector('input[name="normal_tap"]:checked');
+            let normalTap = normalTapRadio ? normalTapRadio.value : Math.ceil(parseInt(document.getElementById('num_taps').value) / 2);
+            let hvAvgNormalOhms = 0;
+
+            let numTaps = parseInt(document.getElementById('num_taps').value);
+            for (let i = 1; i <= numTaps; i++) {
+                let v1 = dt_getVal(`t${i}_1`), v2 = dt_getVal(`t${i}_2`), v3 = dt_getVal(`t${i}_3`);
+                if (v1 || v2 || v3) {
+                    let avgBaseOhms = ((v1 + v2 + v3) / 3) * uHvIn;
+                    let corrBaseOhms = avgBaseOhms * factor75_res;
+
+                    dt_setTxt(`t${i}_avg`, avgBaseOhms * uHvOut, 4);
+                    dt_setTxt(`t${i}_corr`, corrBaseOhms * uHvOut, 4);
+
+                    if (i == normalTap) hvAvgNormalOhms = avgBaseOhms;
+                }
+            }
+
+            let lv1 = dt_getVal('lv_p1'), lv2 = dt_getVal('lv_p2'), lv3 = dt_getVal('lv_p3');
+            let lvAvgBaseOhms = 0, lvCorrBaseOhms = 0;
+            if (lv1 || lv2 || lv3) {
+                lvAvgBaseOhms = ((lv1 + lv2 + lv3) / 3) * uLvIn;
+                lvCorrBaseOhms = lvAvgBaseOhms * factor75_res;
+                dt_setTxt('lv_avg', lvAvgBaseOhms * uLvOut, 4);
+                dt_setTxt('lv_corr', lvCorrBaseOhms * uLvOut, 4);
+            }
+
+            let limHv = parseFloat(document.getElementById('lim_hv_res').value);
+            let limLv = parseFloat(document.getElementById('lim_lv_res').value);
+            let resPass = true;
+            if (!isNaN(limHv) && limHv > 0 && hvAvgNormalOhms > 0) {
+                if ((hvAvgNormalOhms * factor75_res) > limHv) resPass = false;
+            }
+            if (!isNaN(limLv) && limLv > 0 && lvCorrBaseOhms > 0) {
+                if ((lvCorrBaseOhms * 1000) > limLv) resPass = false;
+            }
+            if ((!isNaN(limHv) && limHv > 0) || (!isNaN(limLv) && limLv > 0)) {
+                dt_setBadge('stat_res', resPass);
+            }
+
+            let nlCT = dt_getVal('nl_ct'), nlPT = dt_getVal('nl_pt'), nlWM = dt_getVal('nl_wm');
+            let nlMF = nlCT * nlPT * nlWM;
+            let nlVmeas = dt_getVal('nl_v_meas');
+            let nlImeas = dt_getVal('nl_i_meas');
+            let nlPmeas = dt_getVal('nl_p_meas');
+            let outUnll = dt_getVal('out_u_nll');
+
+            let nlVtest = (lt_kv && nlPT) ? (lt_kv * 1000) / Math.sqrt(3) / nlPT : 0;
+            let nlPcorr = 0;
+            if (nlVtest > 0 && nlVmeas > 0) {
+                nlPcorr = nlPmeas / (0.5 + Math.pow(nlVmeas / nlVtest, 2) * 0.5);
+            }
+
+            let nlNetBase = nlPcorr * nlMF;
+            let nlNetCurrent = nlImeas * nlCT;
+
+            dt_setTxt('out_nl_mf', nlMF);
+            dt_setTxt('out_nl_vtest', nlVtest);
+            dt_setTxt('out_nl_i', nlNetCurrent);
+            dt_setTxt('out_nl_pcorr', nlPcorr);
+            let netNllWatts = nlNetBase * outUnll;
+            dt_setTxt('out_nl_net', netNllWatts, 2);
+
+            let llCT = dt_getVal('ll_ct'), llPT = dt_getVal('ll_pt'), llWM = dt_getVal('ll_wm');
+            let tempLL = dt_getVal('temp_ll');
+            let llMF = llCT * llPT * llWM;
+
+            let llVmeas = dt_getVal('ll_v_meas');
+            let llImeas = dt_getVal('ll_i_meas');
+            let llPmeas = dt_getVal('ll_p_meas');
+            let outUll = dt_getVal('out_u_ll');
+
+            let llItest = llCT ? htCurrent / llCT : 0;
+            let llPcorr = llImeas ? llPmeas * Math.pow(llItest / llImeas, 2) : 0;
+            let llNetBase = llPcorr * llMF;
+
+            let hvPhaseRes = hvAvgNormalOhms * 1.5;
+            let lvMeasType = document.getElementById('lv_meas_type').value;
+            let lvPhaseRes = (lvMeasType === 'PN') ? lvAvgBaseOhms : (lvAvgBaseOhms / 2);
+
+            let htPhaseI = htCurrent / Math.sqrt(3);
+            let hvI2R = 3 * Math.pow(htPhaseI, 2) * hvPhaseRes;
+            let lvI2R = 3 * Math.pow(ltCurrent, 2) * lvPhaseRes;
+
+            let totalI2R_amb = hvI2R + lvI2R;
+            let tempResSafe = tempRes || 37.5;
+            let tempLLSafe = tempLL || 37.5;
+
+            let corrFactorResToLL = (235 + tempLLSafe) / (235 + tempResSafe);
+            let totalI2R_corr_amb = totalI2R_amb * corrFactorResToLL;
+            let stray_amb = llNetBase - totalI2R_corr_amb;
+
+            let corrFactorLLTo75 = (235 + 75) / (235 + tempLLSafe);
+            let corrFactorStrayTo75 = (235 + tempLLSafe) / (235 + 75);
+
+            let stray_75 = stray_amb * corrFactorStrayTo75;
+            let totalI2R_75 = totalI2R_corr_amb * corrFactorLLTo75;
+            let llNet_75 = totalI2R_75 + stray_75;
+
+            dt_setTxt('out_ll_mf', llMF);
+            dt_setTxt('out_ll_itest', llItest);
+            dt_setTxt('out_ll_pcorr', llPcorr);
+            dt_setTxt('out_ll_net', llNetBase);
+
+            dt_setTxt('out_hv_res', hvAvgNormalOhms, 4);
+            dt_setTxt('out_lv_res', lvAvgBaseOhms, 4);
+            dt_setTxt('out_hv_phase_res', hvPhaseRes);
+            dt_setTxt('out_lv_phase_res', lvPhaseRes);
+            dt_setTxt('out_hv_i2r', hvI2R);
+            dt_setTxt('out_lv_i2r', lvI2R);
+            dt_setTxt('out_tot_i2r', totalI2R_amb);
+            dt_setTxt('out_tot_i2r_corr', totalI2R_corr_amb);
+
+            dt_setTxt('out_stray_amb', stray_amb);
+            dt_setTxt('out_stray_75', stray_75);
+
+            dt_setTxt('out_tot_i2r_75', totalI2R_75);
+            let netLoadLossWatts = llNet_75 * outUll;
+            dt_setTxt('out_ll_75', netLoadLossWatts, 3);
+
+            let impVoltAmb = llVmeas * llPT;
+            let phaseVolt = (ht_kv * 1000) / 1.732;
+
+            let z_amb = phaseVolt ? (impVoltAmb / phaseVolt) * 100 : 0;
+            let r_amb = cap_mva ? (llNetBase * 100) / (cap_mva * 1000000) : 0;
+            let x_sq = Math.pow(z_amb, 2) - Math.pow(r_amb, 2);
+            let x = x_sq > 0 ? Math.sqrt(x_sq) : 0;
+
+            let r_75 = r_amb * corrFactorLLTo75;
+            let z_75 = (x || r_75) ? Math.sqrt(Math.pow(x, 2) + Math.pow(r_75, 2)) : 0;
+
+            dt_setTxt('out_z_75', z_75);
+
+            // SECTION 5 SUMMARY COMPUTATION
+            let totalLossesSum = netNllWatts + netLoadLossWatts;
+            dt_setTxt('summary_nll', netNllWatts, 2);
+            dt_setTxt('summary_ll', netLoadLossWatts, 2);
+            dt_setTxt('summary_total_losses', totalLossesSum, 2);
+
+            let limTotalLosses = parseFloat(document.getElementById('lim_total_losses').value);
+            if (!isNaN(limTotalLosses) && limTotalLosses > 0 && totalLossesSum > 0) {
+                dt_setBadge('stat_total_losses', totalLossesSum <= limTotalLosses);
+            } else {
+                dt_setBadge('stat_total_losses', null);
+            }
+        }
+
+        const debouncedCalculateAll = debounce(dt_calculateAll, 300);
+
+        window.onload = function () {
+            loadSidebarReports();
+            dt_updateLVHeaders();
+            dt_generateTapTable();
+        };
+    </script>
+</body>
+</html>
