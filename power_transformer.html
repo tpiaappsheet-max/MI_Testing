@@ -19,11 +19,7 @@
             --sidebar-width: 280px;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: 'Segoe UI', Arial, sans-serif;
@@ -34,14 +30,9 @@
             flex-direction: column;
         }
 
-        .portal-wrapper {
-            display: flex;
-            flex: 1;
-            position: relative;
-            min-height: 100vh;
-        }
+        .portal-wrapper { display: flex; flex: 1; position: relative; min-height: 100vh; }
 
-        /* Sidebar Layout matching Dashboard */
+        /* Sidebar Layout */
         .sidebar {
             width: var(--sidebar-width);
             background-color: var(--primary);
@@ -49,9 +40,7 @@
             display: flex;
             flex-direction: column;
             position: fixed;
-            top: 0;
-            bottom: 0;
-            left: 0;
+            top: 0; bottom: 0; left: 0;
             z-index: 1000;
             transition: transform 0.3s ease-in-out;
             box-shadow: 2px 0 10px rgba(0, 0, 0, 0.15);
@@ -67,15 +56,8 @@
             border-bottom: 2px solid var(--accent);
         }
 
-        .sidebar-menu {
-            list-style: none;
-            padding: 10px 0;
-        }
-
-        .sidebar-menu li {
-            width: 100%;
-        }
-
+        .sidebar-menu { list-style: none; padding: 10px 0; }
+        .sidebar-menu li { width: 100%; }
         .sidebar-menu li a {
             display: flex;
             align-items: center;
@@ -91,51 +73,6 @@
         .sidebar-menu li a.active {
             background-color: var(--secondary);
             border-left-color: var(--accent);
-        }
-
-        /* Reports Section in Sidebar */
-        .reports-section {
-            margin: 15px 12px;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 12px;
-            border-radius: 6px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .reports-section h3 {
-            font-size: 0.85rem;
-            color: #bdc3c7;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding-bottom: 4px;
-        }
-
-        .reports-list {
-            list-style: none;
-            max-height: 180px;
-            overflow-y: auto;
-        }
-
-        .reports-list li {
-            padding: 8px 6px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            font-size: 0.8rem;
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-
-        .reports-list li span.filename {
-            font-weight: 600;
-            color: #fff;
-            word-break: break-all;
-        }
-
-        .reports-list li span.filetime {
-            color: #95a5a6;
-            font-size: 0.75rem;
         }
 
         .mobile-header {
@@ -163,10 +100,7 @@
         .sidebar-overlay {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0, 0, 0, 0.5);
             z-index: 999;
         }
@@ -220,22 +154,9 @@
             margin-bottom: 15px;
         }
 
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .form-group label {
-            font-weight: 600;
-            font-size: 0.85rem;
-            margin-bottom: 4px;
-            color: var(--primary);
-        }
-
-        .input-group {
-            display: flex;
-            gap: 5px;
-        }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group label { font-weight: 600; font-size: 0.85rem; margin-bottom: 4px; color: var(--primary); }
+        .input-group { display: flex; gap: 5px; }
 
         input[type="number"],
         input[type="text"],
@@ -248,48 +169,13 @@
             box-sizing: border-box;
         }
 
-        .input-group select {
-            width: 45%;
-            background: #eef;
-        }
+        .input-group select { width: 45%; background: #eef; }
+        .res-unit { width: auto; display: inline-block; padding: 4px 8px; font-size: 0.8rem; background-color: #f1f2f6; border-radius: 4px; margin-left: 8px;}
 
-        .res-unit {
-            width: auto;
-            display: inline-block;
-            padding: 4px 8px;
-            font-size: 0.8rem;
-            background-color: #f1f2f6;
-            border-radius: 4px;
-            margin-left: 8px;
-        }
-
-        .table-responsive {
-            width: 100%;
-            overflow-x: auto;
-            margin-top: 10px;
-            margin-bottom: 10px;
-            border: 1px solid var(--border);
-            border-radius: 4px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.85rem;
-            min-width: 550px;
-        }
-
-        th,
-        td {
-            border: 1px solid var(--border);
-            padding: 8px;
-            text-align: center;
-        }
-
-        th {
-            background-color: var(--secondary);
-            color: white;
-        }
+        .table-responsive { width: 100%; overflow-x: auto; margin-top: 10px; margin-bottom: 10px; border: 1px solid var(--border); border-radius: 4px; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; min-width: 550px; }
+        th, td { border: 1px solid var(--border); padding: 8px; text-align: center; }
+        th { background-color: var(--secondary); color: white; }
 
         .result-row {
             display: flex;
@@ -304,20 +190,9 @@
             flex-wrap: wrap;
             gap: 6px;
         }
+        .result-val { font-weight: bold; font-size: 0.95rem; }
 
-        .result-val {
-            font-weight: bold;
-            font-size: 0.95rem;
-        }
-
-        .controls {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
+        .controls { display: flex; justify-content: center; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
         button {
             background-color: var(--accent);
             color: white;
@@ -329,139 +204,36 @@
             font-weight: bold;
             transition: background 0.2s;
         }
+        button:hover { background-color: #1f6391; }
+        .btn-large { background-color: #27ae60; }
+        .btn-large:hover { background-color: #219653; }
+        .btn-download { background-color: #8e44ad; }
+        .btn-download:hover { background-color: #732d91; }
 
-        button:hover {
-            background-color: #1f6391;
-        }
-
-        .btn-large {
-            background-color: #27ae60;
-        }
-
-        .btn-large:hover {
-            background-color: #219653;
-        }
-
-        .btn-download {
-            background-color: #8e44ad;
-        }
-
-        .btn-download:hover {
-            background-color: #732d91;
-        }
-
-        .sub-section {
-            border: 1px dashed var(--border);
-            padding: 12px;
-            margin-bottom: 12px;
-            background: #fafafa;
-            border-radius: 4px;
-        }
-
-        .badge {
-            padding: 3px 8px;
-            border-radius: 3px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            margin-left: 8px;
-        }
-
-        .pass {
-            background: var(--pass);
-            color: white;
-        }
-
-        .fail {
-            background: var(--fail);
-            color: white;
-        }
+        .sub-section { border: 1px dashed var(--border); padding: 12px; margin-bottom: 12px; background: #fafafa; border-radius: 4px; }
+        .badge { padding: 3px 8px; border-radius: 3px; font-size: 0.8rem; font-weight: bold; margin-left: 8px; }
+        .pass { background: var(--pass); color: white; }
+        .fail { background: var(--fail); color: white; }
 
         @media (max-width: 900px) {
-            .sidebar {
-                transform: translateX(-100%);
-            }
-
-            .sidebar.open {
-                transform: translateX(0);
-            }
-
-            .sidebar-overlay.open {
-                display: block;
-            }
-
-            .mobile-header {
-                display: flex;
-            }
-
-            .main-content {
-                margin-left: 0;
-                width: 100%;
-                padding: 15px;
-            }
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .sidebar-overlay.open { display: block; }
+            .mobile-header { display: flex; }
+            .main-content { margin-left: 0; width: 100%; padding: 15px; }
         }
 
-        /* PERFECT NATIVE A4 PRINT / PDF STYLING */
         @media print {
-            body {
-                background: white !important;
-            }
-
-            .no-print {
-                display: none !important;
-            }
-
-            .main-content {
-                margin-left: 0 !important;
-                width: 100% !important;
-                padding: 0 !important;
-            }
-
-            .module-container {
-                box-shadow: none !important;
-                padding: 0 !important;
-                width: 100% !important;
-                max-width: none !important;
-            }
-
-            input,
-            select {
-                border: none !important;
-                border-bottom: 1px solid #000 !important;
-                background: transparent !important;
-                border-radius: 0 !important;
-                padding: 2px !important;
-            }
-
-            table,
-            th,
-            td {
-                border: 1px solid #000 !important;
-            }
-
-            th {
-                background: #eee !important;
-                color: #000 !important;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-            }
-
-            .result-row {
-                border: 1px solid #000 !important;
-                border-left: 4px solid #000 !important;
-                background: white !important;
-            }
-
-            .sub-section {
-                border: 1px solid #000 !important;
-                background: white !important;
-                page-break-inside: avoid !important;
-            }
-
-            .badge {
-                border: 1px solid #000 !important;
-                color: #000 !important;
-                background: transparent !important;
-            }
+            body { background: white !important; }
+            .no-print { display: none !important; }
+            .main-content { margin-left: 0 !important; width: 100% !important; padding: 0 !important; }
+            .module-container { box-shadow: none !important; padding: 0 !important; width: 100% !important; max-width: none !important; }
+            input, select { border: none !important; border-bottom: 1px solid #000 !important; background: transparent !important; border-radius: 0 !important; padding: 2px !important; }
+            table, th, td { border: 1px solid #000 !important; }
+            th { background: #eee !important; color: #000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .result-row { border: 1px solid #000 !important; border-left: 4px solid #000 !important; background: white !important; }
+            .sub-section { border: 1px solid #000 !important; background: white !important; page-break-inside: avoid !important; }
+            .badge { border: 1px solid #000 !important; color: #000 !important; background: transparent !important; }
         }
     </style>
 </head>
@@ -481,19 +253,8 @@
             <div class="sidebar-header">⚙️ EngPortal</div>
             <ul class="sidebar-menu">
                 <li><a href="index.html" onclick="toggleSidebar()">🏠 Dashboard</a></li>
-                <li><a href="power_transformer.html" class="active" onclick="toggleSidebar()">⚡ Power Transformer</a>
-                </li>
-
-                <div class="reports-section">
-                    <h3>
-                        📁 Reports Created
-                        <button onclick="clearUserReports()" title="Clear Report Clutter" style="float: right; background: none; border: none; color: #e74c3c; cursor: pointer; font-size: 0.8rem; font-weight: bold;">🗑️ Clear</button>
-                    </h3>
-                    <ul id="userReportsList" class="reports-list">
-                        <li><span>Loading...</span></li>
-                    </ul>
-                </div>
-
+                <li><a href="power_transformer.html" class="active" onclick="toggleSidebar()">⚡ Power Transformer</a></li>
+                <li><a href="distribution_transformer.html" onclick="toggleSidebar()">🔋 Distribution Transformer</a></li>
                 <li><a href="#" onclick="logoutUser()">🚪 Logout</a></li>
             </ul>
         </nav>
@@ -551,8 +312,8 @@
                 <div class="sub-section">
                     <h3>Guaranteed Test Limits</h3>
                     <div class="auto-grid">
-                        <div class="form-group"><label>Max HV Res. at 75°C(Ohms)</label><input type="number" id="lim_hv_res"></div>
-                        <div class="form-group"><label>Max LV Res. at 75°C (mOhms)</label><input type="number" id="lim_lv_res"></div>
+                        <div class="form-group"><label>Max HV Res. (Ohms)</label><input type="number" id="lim_hv_res"></div>
+                        <div class="form-group"><label>Max LV Res. (mOhms)</label><input type="number" id="lim_lv_res"></div>
                         <div class="form-group"><label>Max No-Load Loss (W)</label><input type="number" id="lim_nll"></div>
                         <div class="form-group"><label>Max Load Loss (W)</label><input type="number" id="lim_ll"></div>
                     </div>
@@ -735,100 +496,15 @@
             }
         });
 
-        function loadSidebarReports() {
-            const reportsListEl = document.getElementById('userReportsList');
-            try {
-                const allReports = JSON.parse(localStorage.getItem('eng_portal_reports') || '[]');
-                const userReports = allReports.filter(r => r.userId === currentUser.userID);
-
-                if (userReports.length === 0) {
-                    reportsListEl.innerHTML = '<li style="color: #bdc3c7; text-align: center; padding: 6px;">No reports yet.</li>';
-                    return;
-                }
-
-                reportsListEl.innerHTML = '';
-                userReports.forEach((rep, index) => {
-                    const li = document.createElement('li');
-                    li.style.cursor = "pointer";
-                    li.title = "Click to re-download/view report";
-                    li.innerHTML = `
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <span class="filename" style="color: #3498db; text-decoration: underline;" onclick="reprintReport('${rep.filename}')">${rep.filename}</span>
-                            <button onclick="deleteSingleReport(${index}); event.stopPropagation();" style="background:none; border:none; color:#e74c3c; font-size:0.7rem; cursor:pointer;" title="Remove">✕</button>
-                        </div>
-                        <span class="filetime">${rep.timestamp}</span>`;
-                    reportsListEl.appendChild(li);
-                });
-            } catch (err) {
-                reportsListEl.innerHTML = '<li style="color: #e74c3c;">Failed to load.</li>';
-            }
-        }
-
-        function reprintReport(filename) {
-            if(confirm(`Open/Print saved report: ${filename}?`)) {
-                window.print();
-            }
-        }
-
-        function clearUserReports() {
-            if(confirm("Clear all report history from the sidebar?")) {
-                let allReports = JSON.parse(localStorage.getItem('eng_portal_reports') || '[]');
-                allReports = allReports.filter(r => r.userId !== currentUser.userID);
-                localStorage.setItem('eng_portal_reports', JSON.stringify(allReports));
-                loadSidebarReports();
-            }
-        }
-
-        function deleteSingleReport(indexToRemove) {
-            let allReports = JSON.parse(localStorage.getItem('eng_portal_reports') || '[]');
-            let userReports = allReports.filter(r => r.userId === currentUser.userID);
-            let targetReport = userReports[indexToRemove];
-            
-            if(targetReport) {
-                allReports = allReports.filter(r => !(r.userId === targetReport.userId && r.filename === targetReport.filename));
-                localStorage.setItem('eng_portal_reports', JSON.stringify(allReports));
-                loadSidebarReports();
-            }
-        }
-
-        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz4qhGq7cFt6P3TSZ62X1jiN6wktvvh9wipAh5Nij1TIRy6YG4PPtJyzx9fXn-uOkel/exec";
-
+        // Clean native browser print-to-PDF optimized for A4 using unique ID filename
         async function pt_downloadPDF() {
             if (confirm("Generate A4 PDF Report?")) {
                 await pt_calculateAll();
 
-                // Fetch PTR Unique ID value dynamically
                 const uniqueIdInput = document.getElementById('ptr_unique_id').value.trim();
                 const safeId = uniqueIdInput ? uniqueIdInput : ("PTR-" + Math.floor(1000 + Math.random() * 9000));
-                
-                // Formulate filename as requested: PTR-[Unique ID entered].pdf
                 const uniqueFileName = safeId.startsWith("PTR-") ? `${safeId}.pdf` : `PTR-${safeId}.pdf`;
 
-                const reportRecord = {
-                    userId: currentUser.userID,
-                    username: currentUser.Username,
-                    filename: uniqueFileName,
-                    folderID: "1e9XhCW-ehz6hJbTKZbZJlq6iVcjKVU0r",
-                    timestamp: new Date().toLocaleString()
-                };
-
-                const allReports = JSON.parse(localStorage.getItem('eng_portal_reports') || '[]');
-                allReports.push(reportRecord);
-                localStorage.setItem('eng_portal_reports', JSON.stringify(allReports));
-                loadSidebarReports(); 
-
-                try {
-                    await fetch(APPS_SCRIPT_URL, {
-                        method: "POST",
-                        mode: "no-cors",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ action: "saveReport", ...reportRecord })
-                    });
-                } catch (e) {
-                    console.log("Cloud sync queued.");
-                }
-
-                // Dynamically apply document title so browser print-to-PDF uses the filename as default
                 document.title = uniqueFileName.replace('.pdf', '');
                 window.print();
             }
@@ -1064,7 +740,6 @@
         const debouncedCalculateAll = debounce(pt_calculateAll, 300);
 
         window.onload = function () {
-            loadSidebarReports();
             pt_updateLVHeaders();
             pt_generateTapTable();
         };
