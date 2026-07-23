@@ -603,7 +603,7 @@
                     let corrBaseOhms = avgBaseOhms * factor75_res;
 
                     pt_setTxt(`t${i}_avg`, avgBaseOhms * uHvOut, 4);
-                    pt_setTxt(`t${i}_corr`, corrBaseOhms * uLvOut, 4);
+                    pt_setTxt(`t${i}_corr`, corrBaseOhms * uHvOut, 4);
 
                     if (i == normalTap) hvAvgNormalOhms = avgBaseOhms;
                 }
