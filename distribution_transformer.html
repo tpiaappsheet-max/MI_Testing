@@ -485,6 +485,12 @@
         const currentUser = JSON.parse(localStorage.getItem('eng_portal_user'));
         if (!currentUser) { window.location.href = 'login.html'; }
 
+        // Prevent accidental tab close or refresh
+        window.addEventListener('beforeunload', function (e) {
+            e.preventDefault();
+            e.returnValue = '';
+        });
+
         function toggleSidebar() {
             document.getElementById('portalSidebar').classList.toggle('open');
             document.getElementById('sidebarOverlay').classList.toggle('open');
@@ -619,7 +625,7 @@
                     let corrBaseOhms = avgBaseOhms * factor75_res;
 
                     dt_setTxt(`t${i}_avg`, avgBaseOhms * uHvOut, 4);
-                    dt_setTxt(`t${i}_corr`, corrBaseOhms * uHvOut, 4);
+                    dt_setTxt(`t${i}_corr`, corrBaseOhms * uLvOut, 4);
 
                     if (i == normalTap) hvAvgNormalOhms = avgBaseOhms;
                 }
