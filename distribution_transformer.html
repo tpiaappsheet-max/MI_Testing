@@ -26,43 +26,141 @@
 
         /* Sidebar Layout */
         .sidebar {
-            width: var(--sidebar-width); background-color: var(--primary); color: #ecf0f1;
-            display: flex; flex-direction: column; position: fixed; top: 0; bottom: 0; left: 0;
-            z-index: 1000; transition: transform 0.3s ease-in-out; box-shadow: 2px 0 10px rgba(0, 0, 0, 0.15);
+            width: var(--sidebar-width);
+            background-color: var(--primary);
+            color: #ecf0f1;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0; bottom: 0; left: 0;
+            z-index: 1000;
+            transition: transform 0.3s ease-in-out;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.15);
             overflow-y: auto;
         }
-        .sidebar-header { padding: 20px; background-color: #1a252f; text-align: center; font-size: 1.2rem; font-weight: bold; border-bottom: 2px solid var(--accent); }
+
+        .sidebar-header {
+            padding: 20px;
+            background-color: #1a252f;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-bottom: 2px solid var(--accent);
+        }
+
         .sidebar-menu { list-style: none; padding: 10px 0; }
         .sidebar-menu li { width: 100%; }
-        .sidebar-menu li a { display: flex; align-items: center; gap: 12px; padding: 14px 20px; color: #ecf0f1; text-decoration: none; font-weight: 500; border-left: 4px solid transparent; }
-        .sidebar-menu li a:hover, .sidebar-menu li a.active { background-color: var(--secondary); border-left-color: var(--accent); }
-
-        /* Reports Section in Sidebar */
-        .reports-section {
-            margin: 15px 12px; background: rgba(0, 0, 0, 0.2); padding: 12px;
-            border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.1);
+        .sidebar-menu li a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 20px;
+            color: #ecf0f1;
+            text-decoration: none;
+            font-weight: 500;
+            border-left: 4px solid transparent;
         }
-        .reports-section h3 { font-size: 0.85rem; color: #bdc3c7; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 4px; }
-        .reports-list { list-style: none; max-height: 180px; overflow-y: auto; }
-        .reports-list li { padding: 8px 6px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-size: 0.8rem; display: flex; flex-direction: column; gap: 2px; }
-        .reports-list li span.filename { font-weight: 600; color: #fff; word-break: break-all; }
-        .reports-list li span.filetime { color: #95a5a6; font-size: 0.75rem; }
 
-        .mobile-header { display: none; background-color: var(--primary); color: white; padding: 12px 15px; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 900; }
-        .menu-toggle-btn { background: var(--accent); color: white; border: none; padding: 8px 14px; border-radius: 4px; font-size: 1rem; cursor: pointer; }
-        .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); z-index: 999; }
+        .sidebar-menu li a:hover,
+        .sidebar-menu li a.active {
+            background-color: var(--secondary);
+            border-left-color: var(--accent);
+        }
 
-        .main-content { flex: 1; margin-left: var(--sidebar-width); padding: 25px; width: calc(100% - var(--sidebar-width)); transition: margin-left 0.3s; }
-        .module-container { max-width: 1000px; margin: 0 auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); }
-        .module-container h1 { text-align: center; color: var(--primary); border-bottom: 2px solid var(--primary); padding-bottom: 10px; margin-bottom: 20px; font-size: 1.5rem; }
-        .module-container h2 { font-size: 1.15rem; color: var(--secondary); border-bottom: 1px solid var(--accent); padding-bottom: 5px; margin-top: 20px; margin-bottom: 12px; }
-        .module-container h3 { font-size: 1rem; color: #555; margin-bottom: 10px; text-decoration: underline; }
+        .mobile-header {
+            display: none;
+            background-color: var(--primary);
+            color: white;
+            padding: 12px 15px;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 900;
+        }
 
-        .auto-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 15px; }
+        .menu-toggle-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 25px;
+            width: calc(100% - var(--sidebar-width));
+            transition: margin-left 0.3s;
+        }
+
+        .module-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .module-container h1 {
+            text-align: center;
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .module-container h2 {
+            font-size: 1.15rem;
+            color: var(--secondary);
+            border-bottom: 1px solid var(--accent);
+            padding-bottom: 5px;
+            margin-top: 20px;
+            margin-bottom: 12px;
+        }
+
+        .module-container h3 {
+            font-size: 1rem;
+            color: #555;
+            margin-bottom: 10px;
+            text-decoration: underline;
+        }
+
+        .auto-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
         .form-group { display: flex; flex-direction: column; }
         .form-group label { font-weight: 600; font-size: 0.85rem; margin-bottom: 4px; color: var(--primary); }
         .input-group { display: flex; gap: 5px; }
-        input[type="number"], input[type="text"], select { padding: 8px; border: 1px solid var(--border); border-radius: 4px; font-size: 16px; width: 100%; box-sizing: border-box; }
+
+        input[type="number"],
+        input[type="text"],
+        select {
+            padding: 8px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 16px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
         .input-group select { width: 45%; background: #eef; }
         .res-unit { width: auto; display: inline-block; padding: 4px 8px; font-size: 0.8rem; background-color: #f1f2f6; border-radius: 4px; margin-left: 8px;}
 
@@ -71,11 +169,33 @@
         th, td { border: 1px solid var(--border); padding: 8px; text-align: center; }
         th { background-color: var(--secondary); color: white; }
 
-        .result-row { display: flex; justify-content: space-between; align-items: center; background: #e8f4f8; padding: 10px 12px; border-left: 4px solid var(--accent); margin-bottom: 6px; font-size: 0.9rem; border-radius: 2px; flex-wrap: wrap; gap: 6px; }
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #e8f4f8;
+            padding: 10px 12px;
+            border-left: 4px solid var(--accent);
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+            border-radius: 2px;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
         .result-val { font-weight: bold; font-size: 0.95rem; }
 
         .controls { display: flex; justify-content: center; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
-        button { background-color: var(--accent); color: white; border: none; padding: 10px 18px; border-radius: 4px; cursor: pointer; font-size: 0.95rem; font-weight: bold; transition: background 0.2s; }
+        button {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
         button:hover { background-color: #1f6391; }
         .btn-large { background-color: #27ae60; }
         .btn-large:hover { background-color: #219653; }
@@ -127,17 +247,6 @@
                 <li><a href="index.html" onclick="toggleSidebar()">🏠 Dashboard</a></li>
                 <li><a href="power_transformer.html" onclick="toggleSidebar()">⚡ Power Transformer</a></li>
                 <li><a href="distribution_transformer.html" class="active" onclick="toggleSidebar()">🔋 Distribution Transformer</a></li>
-
-                <div class="reports-section">
-                    <h3>
-                        📁 Reports Created
-                        <button onclick="clearUserReports()" title="Clear Report Clutter" style="float: right; background: none; border: none; color: #e74c3c; cursor: pointer; font-size: 0.8rem; font-weight: bold;">🗑️ Clear</button>
-                    </h3>
-                    <ul id="userReportsList" class="reports-list">
-                        <li><span>Loading...</span></li>
-                    </ul>
-                </div>
-
                 <li><a href="#" onclick="logoutUser()">🚪 Logout</a></li>
             </ul>
         </nav>
@@ -195,8 +304,8 @@
                 <div class="sub-section">
                     <h3>Guaranteed Test Limits</h3>
                     <div class="auto-grid">
-                        <div class="form-group"><label>Max HV Res. at 75°C (Ohms)</label><input type="number" id="lim_hv_res"></div>
-                        <div class="form-group"><label>Max LV Res. at 75°C (mOhms)</label><input type="number" id="lim_lv_res"></div>
+                        <div class="form-group"><label>Max HV Res. (Ohms)</label><input type="number" id="lim_hv_res"></div>
+                        <div class="form-group"><label>Max LV Res. (mOhms)</label><input type="number" id="lim_lv_res"></div>
                         <div class="form-group" style="grid-column: span 2;"><label>Max Total Losses (No-Load + Load) (W)</label><input type="number" id="lim_total_losses"></div>
                     </div>
                 </div>
@@ -400,64 +509,6 @@
             }
         });
 
-        function loadSidebarReports() {
-            const reportsListEl = document.getElementById('userReportsList');
-            try {
-                const allReports = JSON.parse(localStorage.getItem('eng_portal_reports') || '[]');
-                const userReports = allReports.filter(r => r.userId === currentUser.userID);
-
-                if (userReports.length === 0) {
-                    reportsListEl.innerHTML = '<li style="color: #bdc3c7; text-align: center; padding: 6px;">No reports yet.</li>';
-                    return;
-                }
-
-                reportsListEl.innerHTML = '';
-                userReports.forEach((rep, index) => {
-                    const li = document.createElement('li');
-                    li.style.cursor = "pointer";
-                    li.title = "Click to re-download/view report";
-                    li.innerHTML = `
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <span class="filename" style="color: #3498db; text-decoration: underline;" onclick="reprintReport('${rep.filename}')">${rep.filename}</span>
-                            <button onclick="deleteSingleReport(${index}); event.stopPropagation();" style="background:none; border:none; color:#e74c3c; font-size:0.7rem; cursor:pointer;" title="Remove">✕</button>
-                        </div>
-                        <span class="filetime">${rep.timestamp}</span>`;
-                    reportsListEl.appendChild(li);
-                });
-            } catch (err) {
-                reportsListEl.innerHTML = '<li style="color: #e74c3c;">Failed to load.</li>';
-            }
-        }
-
-        function reprintReport(filename) {
-            if(confirm(`Open/Print saved report: ${filename}?`)) {
-                window.print();
-            }
-        }
-
-        function clearUserReports() {
-            if(confirm("Clear all report history from the sidebar?")) {
-                let allReports = JSON.parse(localStorage.getItem('eng_portal_reports') || '[]');
-                allReports = allReports.filter(r => r.userId !== currentUser.userID);
-                localStorage.setItem('eng_portal_reports', JSON.stringify(allReports));
-                loadSidebarReports();
-            }
-        }
-
-        function deleteSingleReport(indexToRemove) {
-            let allReports = JSON.parse(localStorage.getItem('eng_portal_reports') || '[]');
-            let userReports = allReports.filter(r => r.userId === currentUser.userID);
-            let targetReport = userReports[indexToRemove];
-            
-            if(targetReport) {
-                allReports = allReports.filter(r => !(r.userId === targetReport.userId && r.filename === targetReport.filename));
-                localStorage.setItem('eng_portal_reports', JSON.stringify(allReports));
-                loadSidebarReports();
-            }
-        }
-
-        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz4qhGq7cFt6P3TSZ62X1jiN6wktvvh9wipAh5Nij1TIRy6YG4PPtJyzx9fXn-uOkel/exec";
-
         async function dt_downloadPDF() {
             if (confirm("Generate A4 PDF Report?")) {
                 await dt_calculateAll();
@@ -465,30 +516,6 @@
                 const uniqueIdInput = document.getElementById('dtr_unique_id').value.trim();
                 const safeId = uniqueIdInput ? uniqueIdInput : ("DTR-" + Math.floor(1000 + Math.random() * 9000));
                 const uniqueFileName = safeId.startsWith("DTR-") ? `${safeId}.pdf` : `DTR-${safeId}.pdf`;
-
-                const reportRecord = {
-                    userId: currentUser.userID,
-                    username: currentUser.Username,
-                    filename: uniqueFileName,
-                    folderID: "1e9XhCW-ehz6hJbTKZbZJlq6iVcjKVU0r",
-                    timestamp: new Date().toLocaleString()
-                };
-
-                const allReports = JSON.parse(localStorage.getItem('eng_portal_reports') || '[]');
-                allReports.push(reportRecord);
-                localStorage.setItem('eng_portal_reports', JSON.stringify(allReports));
-                loadSidebarReports(); 
-
-                try {
-                    await fetch(APPS_SCRIPT_URL, {
-                        method: "POST",
-                        mode: "no-cors",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ action: "saveReport", ...reportRecord })
-                    });
-                } catch (e) {
-                    console.log("Cloud sync queued.");
-                }
 
                 document.title = uniqueFileName.replace('.pdf', '');
                 window.print();
@@ -730,7 +757,6 @@
         const debouncedCalculateAll = debounce(dt_calculateAll, 300);
 
         window.onload = function () {
-            loadSidebarReports();
             dt_updateLVHeaders();
             dt_generateTapTable();
         };
